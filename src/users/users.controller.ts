@@ -1,4 +1,15 @@
-import { Controller, Post, Get, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseInterceptors,
+  ClassSerializerInterceptor,
+} from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
 import { UsersService } from './users.service';
@@ -13,7 +24,8 @@ export class UsersController {
   createUser(@Body() body: CreateUserDto) {
     return this.userService.create(body.email, body.password);
   }
-
+  
+  @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.userService.findOne(new ObjectId(id));
