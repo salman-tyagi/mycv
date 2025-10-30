@@ -1,18 +1,9 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Patch,
-  Delete,
-  Body,
-  Param,
-  Query,
-  UseInterceptors,
-  ClassSerializerInterceptor,
-} from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Body, Param, Query } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
 import { UsersService } from './users.service';
+import { AuthService } from './auth.service';
+
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
@@ -22,11 +13,14 @@ import { Serialize } from './interceptors/serialize.interceptor';
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('signup')
   createUser(@Body() body: CreateUserDto) {
-    return this.userService.create(body.email, body.password);
+    return this.authService.signUp(body.email, body.password);
   }
 
   // @UseInterceptors(new SerializeInterceptor(UserDto))

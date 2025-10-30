@@ -1,4 +1,12 @@
-import { Entity, ObjectIdColumn, Column, AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
+import {
+  Entity,
+  ObjectIdColumn,
+  Column,
+  AfterInsert,
+  AfterUpdate,
+  AfterRemove,
+  Index,
+} from 'typeorm';
 import { ObjectId } from 'mongodb';
 // import { Exclude, Transform } from 'class-transformer';
 
@@ -9,6 +17,7 @@ export class User {
   _id: ObjectId;
 
   @Column()
+  @Index({ unique: true })
   email: string;
 
   @Column()
