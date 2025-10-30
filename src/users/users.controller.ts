@@ -20,6 +20,7 @@ import { UserDto } from './dtos/user.dto';
 import { Serialize } from './interceptors/serialize.interceptor';
 
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -29,7 +30,7 @@ export class UsersController {
   }
 
   // @UseInterceptors(new SerializeInterceptor(UserDto))
-  @Serialize(UserDto)
+  // @Serialize(UserDto)
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.userService.findOne(new ObjectId(id));
