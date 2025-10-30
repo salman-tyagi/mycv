@@ -7,6 +7,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 
+import { User } from './users/user.entity';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -15,7 +17,7 @@ import { ReportsModule } from './reports/reports.module';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.DB,
-      entities: [],
+      entities: [User],
       synchronize: true, // for development only
     }),
     UsersModule,
