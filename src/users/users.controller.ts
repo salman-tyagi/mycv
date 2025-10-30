@@ -16,6 +16,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 
+import { SerializeInterceptor } from './interceptors/serialize.interceptor';
+
 @Controller('auth')
 export class UsersController {
   constructor(private userService: UsersService) {}
@@ -24,10 +26,11 @@ export class UsersController {
   createUser(@Body() body: CreateUserDto) {
     return this.userService.create(body.email, body.password);
   }
-  
-  @UseInterceptors(ClassSerializerInterceptor)
+
+  @UseInterceptors(SerializeInterceptor)
   @Get(':id')
   getUser(@Param('id') id: string) {
+    console.log('============== handler running ==============');
     return this.userService.findOne(new ObjectId(id));
   }
 

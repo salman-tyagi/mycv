@@ -1,10 +1,10 @@
 import { Entity, ObjectIdColumn, Column, AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
 import { ObjectId } from 'mongodb';
-import { Exclude, Transform } from 'class-transformer';
+// import { Exclude, Transform } from 'class-transformer';
 
 @Entity()
 export class User {
-  @Transform(({ value }) => value?.toString()) // To convert the BSON type to JSON during transform
+  // @Transform(({ value }) => value?.toString()) // To convert the BSON type to JSON during transform
   @ObjectIdColumn()
   _id: ObjectId;
 
@@ -12,7 +12,7 @@ export class User {
   email: string;
 
   @Column()
-  @Exclude() // Transform entity into plain object, remove password field then convert to JSON
+  // @Exclude() // Transform entity into plain object, remove password field then convert to JSON
   password: string;
 
   // Hooks only works on entity instances not on plain object in repository
