@@ -15,6 +15,7 @@ import { ObjectId } from 'mongodb';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserDto } from './dtos/user.dto';
 
 import { SerializeInterceptor } from './interceptors/serialize.interceptor';
 
@@ -27,10 +28,9 @@ export class UsersController {
     return this.userService.create(body.email, body.password);
   }
 
-  @UseInterceptors(SerializeInterceptor)
+  @UseInterceptors(new SerializeInterceptor(UserDto))
   @Get(':id')
   getUser(@Param('id') id: string) {
-    console.log('============== handler running ==============');
     return this.userService.findOne(new ObjectId(id));
   }
 
