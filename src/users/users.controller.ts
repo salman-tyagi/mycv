@@ -1,7 +1,9 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Get, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
 
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Controller('auth')
 export class UsersController {
@@ -9,6 +11,26 @@ export class UsersController {
 
   @Post('signup')
   createUser(@Body() body: CreateUserDto) {
-    this.userService.create(body.email, body.password);
+    return this.userService.create(body.email, body.password);
+  }
+
+  @Get(':id')
+  getUser(@Param('id') id: string) {
+    return this.userService.findOne(new ObjectId(id));
+  }
+
+  @Get()
+  getAllUsers(@Query('email') email: string) {
+    return this.userService.find(email);
+  }
+
+  @Delete(':id')
+  removeUser(@Param('id') id: string) {
+    return this.userService.remove(new ObjectId(id));
+  }
+
+  @Patch(':id')
+  updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return this.userService.update(new ObjectId(id), body);
   }
 }

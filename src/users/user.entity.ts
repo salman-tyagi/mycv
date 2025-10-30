@@ -1,9 +1,10 @@
 import { Entity, ObjectIdColumn, Column, AfterInsert, AfterUpdate, AfterRemove } from 'typeorm';
+import { ObjectId } from 'mongodb';
 
 @Entity()
 export class User {
   @ObjectIdColumn()
-  _id: number;
+  _id: ObjectId;
 
   @Column()
   email: string;
@@ -11,6 +12,7 @@ export class User {
   @Column()
   password: string;
 
+  // Hooks only works on entity instances not on plain object in repository
   @AfterInsert()
   logInsert() {
     console.log('User document created with id', this._id);

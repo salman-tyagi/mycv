@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
 
 import { User } from './users/user.entity';
+import { Report } from './reports/report.entity';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { User } from './users/user.entity';
       type: 'mongodb',
       url: process.env.DB,
       database: 'my-cv',
-      entities: [User],
+      entities: [User, Report],
       synchronize: true, // for development only
     }),
     UsersModule,
