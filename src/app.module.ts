@@ -6,7 +6,6 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { ReportsModule } from './reports/reports.module';
-
 import { User } from './users/user.entity';
 
 @Module({
@@ -17,6 +16,7 @@ import { User } from './users/user.entity';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.DB,
+      database: 'my-cv',
       entities: [User],
       synchronize: true, // for development only
     }),
