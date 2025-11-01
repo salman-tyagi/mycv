@@ -7,7 +7,7 @@ import {
   Body,
   Param,
   Query,
-  UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
@@ -17,16 +17,15 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
-import { SignedUserDto } from './dtos/signed-user.dto';
 
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CurrentUser } from './decorators/current-user.decorator';
 
-import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 import { User } from './user.entity';
+import { AuthGuard } from '../guards/auth.guard';
 
-@Serialize(UserDto)
 @Controller('auth')
+@Serialize(UserDto)
 export class UsersController {
   constructor(
     private userService: UsersService,
@@ -38,7 +37,6 @@ export class UsersController {
     return this.authService.signup(email, password);
   }
 
-  @Serialize(SignedUserDto)
   @Post('login')
   signin(@Body() { email, password }: CreateUserDto) {
     return this.authService.login(email, password);
@@ -54,6 +52,7 @@ export class UsersController {
     return this.userService.findOne(ObjectId.createFromHexString(id));
   }
 
+  @UseGuards(AuthGuard)
   @Get()
   getAllUsers(@Query('email') email: string) {
     return this.userService.find(email);

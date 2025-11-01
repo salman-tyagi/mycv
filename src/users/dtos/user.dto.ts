@@ -1,4 +1,5 @@
 import { Expose, Transform } from 'class-transformer';
+import { IsOptional } from 'class-validator';
 import { ObjectId } from 'mongodb';
 
 export class UserDto {
@@ -8,4 +9,8 @@ export class UserDto {
 
   @Expose()
   email: string;
+
+  @IsOptional()
+  @Expose()
+  accessToken: string;
 }
