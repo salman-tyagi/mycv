@@ -22,8 +22,10 @@ import { SignedUserDto } from './dtos/signed-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { CurrentUser } from './decorators/current-user.decorator';
 
-import { ProtectInterceptor } from './interceptors/protect.interceptor';
+import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
+import { User } from './user.entity';
 
+@Serialize(UserDto)
 @Controller('auth')
 export class UsersController {
   constructor(
@@ -31,7 +33,6 @@ export class UsersController {
     private authService: AuthService,
   ) {}
 
-  @Serialize(UserDto)
   @Post('signup')
   createUser(@Body() { email, password }: CreateUserDto) {
     return this.authService.signup(email, password);
@@ -43,34 +44,26 @@ export class UsersController {
     return this.authService.login(email, password);
   }
 
-  @Serialize(UserDto)
-  @UseInterceptors(ProtectInterceptor)
-  @Get('protect')
-  getCurrentUser(@CurrentUser() user: string) {
+  @Get('current-user')
+  getCurrentUser(@CurrentUser() user: User) {
     return user;
   }
 
-  // @UseInterceptors(new SerializeInterceptor(UserDto))
-  @Serialize(UserDto)
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.userService.findOne(ObjectId.createFromHexString(id));
   }
 
-  @UseInterceptors(ProtectInterceptor)
-  @Serialize(UserDto)
   @Get()
   getAllUsers(@Query('email') email: string) {
     return this.userService.find(email);
   }
 
-  @Serialize(UserDto)
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     return this.userService.remove(ObjectId.createFromHexString(id));
   }
 
-  @Serialize(UserDto)
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     return this.userService.update(ObjectId.createFromHexString(id), body);

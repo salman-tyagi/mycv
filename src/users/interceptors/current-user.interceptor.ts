@@ -11,8 +11,11 @@ import { ObjectId } from 'mongodb';
 import { UsersService } from '../users.service';
 import { JwtError } from 'src/constants/config';
 
+// [x]
+// This is not about authenticate the user interceptors are actually used to modify the coming
+// request and outgoing response that's it
 @Injectable()
-export class ProtectInterceptor implements NestInterceptor {
+export class CurrentUserInterceptor implements NestInterceptor {
   constructor(
     private jwtService: JwtService,
     private usersService: UsersService,
@@ -49,3 +52,4 @@ export class ProtectInterceptor implements NestInterceptor {
     return handler.handle();
   }
 }
+// [x]
