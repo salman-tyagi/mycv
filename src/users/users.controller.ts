@@ -7,39 +7,49 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
+import { SignedUserDto } from './dtos/signed-user.dto';
 
 import { Serialize } from './interceptors/serialize.interceptor';
 
 @Controller('auth')
-@Serialize(UserDto)
 export class UsersController {
   constructor(
     private userService: UsersService,
     private authService: AuthService,
   ) {}
 
+  @Serialize(UserDto)
   @Post('signup')
-  createUser(@Body() body: CreateUserDto) {
-    return this.authService.signUp(body.email, body.password);
+  createUser(@Body() { email, password }: CreateUserDto) {
+    return this.authService.signup(email, password);
+  }
+
+  @Serialize(SignedUserDto)
+  @Post('login')
+  signin(@Body() { email, password }: CreateUserDto) {
+    return this.authService.login(email, password);
   }
 
   // @UseInterceptors(new SerializeInterceptor(UserDto))
-  // @Serialize(UserDto)
+  @Serialize(UserDto)
   @Get(':id')
   getUser(@Param('id') id: string) {
     return this.userService.findOne(new ObjectId(id));
   }
 
+  @Serialize(UserDto)
   @Get()
   getAllUsers(@Query('email') email: string) {
     return this.userService.find(email);
   }
 
+  @Serialize(UserDto)
   @Delete(':id')
   removeUser(@Param('id') id: string) {
     return this.userService.remove(new ObjectId(id));
   }
 
+  @Serialize(UserDto)
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
     return this.userService.update(new ObjectId(id), body);

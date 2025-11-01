@@ -1,39 +1,64 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
 import bcrypt from 'bcryptjs';
+import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from './users.service';
 
-import { ENCRYPT_SALT } from '../constants/config';
+import { ENCRYPT_SALT, MongoError } from '../constants/config';
 
 @Injectable()
 export class AuthService {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private jwtService: JwtService,
+  ) {}
 
-  async signUp(email: string, password: string) {
+  async signup(email: string, password: string) {
     try {
-      // check if email is registered, if yes throw error
       const users = await this.userService.find(email);
 
       if (users.length) {
-        throw new BadRequestException('email in use');
+        throw new BadRequestException('email already exists');
       }
 
-      // hash the user's password
       const encryptedPass = await bcrypt.hash(password, ENCRYPT_SALT);
 
-      // save the user in DB
       const user = await this.userService.create(email, encryptedPass);
 
-      // return user
       return user;
     } catch (err) {
-      if (err.code === 11000) {
+      if (err.code === MongoError.Code) {
         throw new BadRequestException('email in use');
       }
 
-      throw new BadRequestException(err.message);
+      throw err;
     }
   }
 
-  signIn() {}
+  async login(email: string, password: string) {
+    try {
+      const [user] = await this.userService.find(email);
+
+      if (!user) {
+        throw new UnauthorizedException('incorrect email or password');
+      }
+
+      const validPass = await bcrypt.compare(password, user.password);
+
+      if (!validPass) {
+        throw new UnauthorizedException('incorrect email or password');
+      }
+
+      // Create token with user id only
+      const accessToken = await this.jwtService.signAsync({ _id: user._id });
+
+      // TODO Set cookie
+
+      // FIXME Send res with cookie
+
+      return { ...user, accessToken };
+    } catch (err) {
+      throw err;
+    }
+  }
 }
