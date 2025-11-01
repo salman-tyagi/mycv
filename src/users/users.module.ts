@@ -9,17 +9,15 @@ import { AuthService } from './auth.service';
 
 import { User } from './user.entity';
 
-import { JwtAccessTokenConfig } from '../constants/config';
-
 @Module({
   imports: [
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_ACCESS_TOKEN_SECRET'),
+        secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
         signOptions: {
-          expiresIn: JwtAccessTokenConfig.ExpiresIn,
+          expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN'),
         },
       }),
       inject: [ConfigService],

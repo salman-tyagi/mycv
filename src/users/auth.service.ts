@@ -4,26 +4,26 @@ import { JwtService } from '@nestjs/jwt';
 
 import { UsersService } from './users.service';
 
-import { ENCRYPT_SALT, MongoError } from '../constants/config';
+import { MongoError } from '../constants/config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private userService: UsersService,
+    private usersService: UsersService,
     private jwtService: JwtService,
   ) {}
 
   async signup(email: string, password: string) {
     try {
-      const users = await this.userService.find(email);
+      const users = await this.usersService.find(email);
 
       if (users.length) {
         throw new BadRequestException('email already exists');
       }
 
-      const encryptedPass = await bcrypt.hash(password, ENCRYPT_SALT);
+      const encryptedPass = await bcrypt.hash(password, 12);
 
-      const user = await this.userService.create(email, encryptedPass);
+      const user = await this.usersService.create(email, encryptedPass);
 
       return user;
     } catch (err) {
@@ -37,7 +37,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     try {
-      const [user] = await this.userService.find(email);
+      const [user] = await this.usersService.find(email);
 
       if (!user) {
         throw new UnauthorizedException('incorrect email or password');

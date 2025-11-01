@@ -1,4 +1,14 @@
-import { Controller, Post, Get, Patch, Delete, Body, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 
 import { UsersService } from './users.service';
@@ -9,7 +19,10 @@ import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserDto } from './dtos/user.dto';
 import { SignedUserDto } from './dtos/signed-user.dto';
 
-import { Serialize } from './interceptors/serialize.interceptor';
+import { Serialize } from '../interceptors/serialize.interceptor';
+import { CurrentUser } from './decorators/current-user.decorator';
+
+import { ProtectInterceptor } from './interceptors/protect.interceptor';
 
 @Controller('auth')
 export class UsersController {
@@ -30,13 +43,21 @@ export class UsersController {
     return this.authService.login(email, password);
   }
 
+  @Serialize(UserDto)
+  @UseInterceptors(ProtectInterceptor)
+  @Get('protect')
+  getCurrentUser(@CurrentUser() user: string) {
+    return user;
+  }
+
   // @UseInterceptors(new SerializeInterceptor(UserDto))
   @Serialize(UserDto)
   @Get(':id')
   getUser(@Param('id') id: string) {
-    return this.userService.findOne(new ObjectId(id));
+    return this.userService.findOne(ObjectId.createFromHexString(id));
   }
 
+  @UseInterceptors(ProtectInterceptor)
   @Serialize(UserDto)
   @Get()
   getAllUsers(@Query('email') email: string) {
@@ -46,12 +67,12 @@ export class UsersController {
   @Serialize(UserDto)
   @Delete(':id')
   removeUser(@Param('id') id: string) {
-    return this.userService.remove(new ObjectId(id));
+    return this.userService.remove(ObjectId.createFromHexString(id));
   }
 
   @Serialize(UserDto)
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    return this.userService.update(new ObjectId(id), body);
+    return this.userService.update(ObjectId.createFromHexString(id), body);
   }
 }
