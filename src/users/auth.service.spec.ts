@@ -7,33 +7,39 @@ import { UsersService } from './users.service';
 
 import { User } from './user.entity';
 
-it('should create instance of auth service', async () => {
-  const FakeUsersService: Partial<UsersService> = {
-    find: () => Promise.resolve([]),
-    create: (email: string, password: string) =>
-      Promise.resolve({ _id: ObjectId, email, password } as unknown as User),
-  };
+describe('AuthService', () => {
+  let service: AuthService;
 
-  const FakeJwtService: Partial<JwtService> = {
-    signAsync: () => Promise.resolve(''),
-  };
+  beforeEach(async () => {
+    const FakeUsersService: Partial<UsersService> = {
+      find: () => Promise.resolve([]),
+      create: (email: string, password: string) =>
+        Promise.resolve({ _id: ObjectId, email, password } as unknown as User),
+    };
 
-  const module = await Test.createTestingModule({
-    providers: [
-      AuthService,
-      JwtService,
-      {
-        provide: UsersService,
-        useValue: FakeUsersService,
-      },
-      {
-        provide: JwtService,
-        useValue: FakeJwtService,
-      },
-    ],
-  }).compile();
+    const FakeJwtService: Partial<JwtService> = {
+      signAsync: () => Promise.resolve(''),
+    };
 
-  const service = module.get(AuthService);
+    const module = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        JwtService,
+        {
+          provide: UsersService,
+          useValue: FakeUsersService,
+        },
+        {
+          provide: JwtService,
+          useValue: FakeJwtService,
+        },
+      ],
+    }).compile();
 
-  expect(service).toBeDefined();
+    service = module.get(AuthService);
+  });
+
+  it('should create instance of auth service', async () => {
+    expect(service).toBeDefined();
+  });
 });
