@@ -65,17 +65,17 @@ describe('AuthService', () => {
   });
 
   it('should throw error if user signs up with email that is in use', async () => {
-    fakeUsersService.find = () =>
-      Promise.resolve([{ _id: ObjectId, email: 'a', password: 'b' } as unknown as User]);
-
+    await service.signup('1@email.com', 'no-matter');
     await expect(service.signup('1@email.com', 'password')).rejects.toThrow(BadRequestException);
   });
 
   it('should throw error if user logs in with unused/invalid email', async () => {
-    await expect(service.login('hulu@hulu.com', 'hulu')).rejects.toThrow(UnauthorizedException);
+    await service.signup('test@test.com', 'password');
+    await expect(service.login('hello@mail.com', 'hulu')).rejects.toThrow(UnauthorizedException);
   });
 
   it('should throw error if incorrect password is used', async () => {
+    await service.signup('1@email.com', 'password');
     await expect(service.login('1@email.com', 'test')).rejects.toThrow(UnauthorizedException);
   });
 
