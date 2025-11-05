@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ObjectId } from 'mongodb';
 
 import { UsersService } from '../users.service';
-import { JwtError } from 'src/constants/config';
+import { JwtError } from '../../constants/config';
 
 // [x]
 // This is not about authenticate the user interceptors are actually used to modify the coming

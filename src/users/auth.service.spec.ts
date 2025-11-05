@@ -1,6 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { ObjectId } from 'mongodb';
 import { JwtService } from '@nestjs/jwt';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
+import bcrypt from 'bcryptjs';
 
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
@@ -9,15 +11,25 @@ import { User } from './user.entity';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let fakeUsersService: Partial<UsersService>;
 
   beforeEach(async () => {
-    const FakeUsersService: Partial<UsersService> = {
-      find: () => Promise.resolve([]),
-      create: (email: string, password: string) =>
-        Promise.resolve({ _id: ObjectId, email, password } as unknown as User),
+    let users: User[] = [];
+
+    fakeUsersService = {
+      find: (email: string) => {
+        const filteredUsers = users.filter((user) => user.email === email);
+        return Promise.resolve(filteredUsers);
+      },
+      create: (email: string, password: string) => {
+        const user = { _id: new ObjectId(), email, password } as User;
+        users.push(user);
+
+        return Promise.resolve(user);
+      },
     };
 
-    const FakeJwtService: Partial<JwtService> = {
+    const fakeJwtService: Partial<JwtService> = {
       signAsync: () => Promise.resolve(''),
     };
 
@@ -27,11 +39,11 @@ describe('AuthService', () => {
         JwtService,
         {
           provide: UsersService,
-          useValue: FakeUsersService,
+          useValue: fakeUsersService,
         },
         {
           provide: JwtService,
-          useValue: FakeJwtService,
+          useValue: fakeJwtService,
         },
       ],
     }).compile();
@@ -44,11 +56,33 @@ describe('AuthService', () => {
   });
 
   it('should create a user with hashed password', async () => {
-    const user = await service.signup('test@test@email.com', 'test');
+    const user = await service.signup('test@test.com', 'test');
 
     expect(user.password).not.toEqual('test');
     const { password } = user;
 
     expect(password).toBeDefined();
+  });
+
+  it('should throw error if user signs up with email that is in use', async () => {
+    fakeUsersService.find = () =>
+      Promise.resolve([{ _id: ObjectId, email: 'a', password: 'b' } as unknown as User]);
+
+    await expect(service.signup('1@email.com', 'password')).rejects.toThrow(BadRequestException);
+  });
+
+  it('should throw error if user logs in with unused/invalid email', async () => {
+    await expect(service.login('hulu@hulu.com', 'hulu')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('should throw error if incorrect password is used', async () => {
+    await expect(service.login('1@email.com', 'test')).rejects.toThrow(UnauthorizedException);
+  });
+
+  it('should return user if correct email and password provided', async () => {
+    await service.signup('test@test.com', 'password');
+    const user = await service.login('test@test.com', 'password');
+
+    expect(user).toBeDefined();
   });
 });

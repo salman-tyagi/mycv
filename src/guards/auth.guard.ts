@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ObjectId } from 'mongodb';
 
 import { UsersService } from '../users/users.service';
-import { JwtError } from 'src/constants/config';
+import { JwtError } from '../constants/config';
 
 export class AuthGuard implements CanActivate {
   constructor(
