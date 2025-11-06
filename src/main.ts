@@ -1,11 +1,12 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import morgan from 'morgan';
 
 import { AppModule } from './app.module';
-import { setupApp } from './setup.app';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  setupApp(app);
+  app.use(morgan('dev'));
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

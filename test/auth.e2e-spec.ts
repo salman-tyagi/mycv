@@ -4,8 +4,6 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 import { AppModule } from '../src/app.module';
 
-import { setupApp } from '../src/setup.app';
-
 describe('Authentication System', () => {
   let app: INestApplication<App>;
 
@@ -15,8 +13,6 @@ describe('Authentication System', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    setupApp(app);
-
     await app.init();
   });
 
