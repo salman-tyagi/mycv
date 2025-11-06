@@ -18,24 +18,37 @@ import { Report } from './reports/report.entity';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: process.env.DB,
-      database: 'my-cv',
-      entities: [User, Report],
-      synchronize: true, // for development only
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   url: process.env.DB,
+    //   database: 'my-cv',
+    //   entities: [User, Report],
+    //   synchronize: true, // for development only
+    // }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: 'mongodb',
+          url: configService.get('DB'),
+          entities: [User, Report],
+          synchronize: configService.get('NODE_ENV') === 'development',
+        };
+      },
     }),
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
         signOptions: {
           expiresIn: configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN'),
         },
       }),
-      inject: [ConfigService],
     }),
     UsersModule,
     ReportsModule,
