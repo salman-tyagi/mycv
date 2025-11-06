@@ -2,7 +2,6 @@ import { Test } from '@nestjs/testing';
 import { ObjectId } from 'mongodb';
 import { JwtService } from '@nestjs/jwt';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
-import bcrypt from 'bcryptjs';
 
 import { AuthService } from './auth.service';
 import { UsersService } from './users.service';
@@ -36,7 +35,6 @@ describe('AuthService', () => {
     const module = await Test.createTestingModule({
       providers: [
         AuthService,
-        JwtService,
         {
           provide: UsersService,
           useValue: fakeUsersService,
