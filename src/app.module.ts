@@ -1,8 +1,9 @@
-import { Module, ValidationPipe } from '@nestjs/common';
+import { Module, ValidationPipe, MiddlewareConsumer } from '@nestjs/common';
 import { APP_PIPE } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import morgan from 'morgan';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -50,4 +51,8 @@ import { Report } from './reports/report.entity';
     },
   ],
 })
-export class AppModule {}
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(morgan('dev')).forRoutes('*');
+  }
+}
