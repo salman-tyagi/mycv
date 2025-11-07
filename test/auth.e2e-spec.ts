@@ -44,7 +44,7 @@ describe('Authentication System', () => {
       });
   });
 
-  it('should log the user in if he is signed-up before', async () => {
+  it('should log the user in if he is signed-up before also allowed to get access guarded endpoint', async () => {
     return request(app.getHttpServer())
       .post('/auth/login')
       .send({
@@ -52,12 +52,22 @@ describe('Authentication System', () => {
         password: testPass,
       })
       .expect(201)
-      .then((res) => {
+      .then(async (res) => {
         const { _id, email, accessToken } = res.body;
 
         expect(_id).toBeDefined();
         expect(email).toEqual(testEmail);
         expect(accessToken).toBeDefined();
+
+        return request(app.getHttpServer())
+          .get('/auth')
+          .set({
+            authorization: `Bearer ${accessToken}`,
+          })
+          .expect(200)
+          .then((res) => {
+            expect(res.body).toStrictEqual([]);
+          });
       });
   });
 });
