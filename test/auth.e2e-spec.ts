@@ -2,10 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 import { App } from 'supertest/types';
+
 import { AppModule } from '../src/app.module';
+import { resetDatabase } from './setup';
 
 describe('Authentication System', () => {
   let app: INestApplication<App>;
+
+  beforeAll(async () => {
+    await resetDatabase();
+  });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -14,6 +20,10 @@ describe('Authentication System', () => {
 
     app = moduleFixture.createNestApplication();
     await app.init();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   it('should handle a signup request', async () => {
