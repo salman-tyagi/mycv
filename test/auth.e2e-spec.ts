@@ -8,6 +8,8 @@ import { resetDatabase } from './setup';
 
 describe('Authentication System', () => {
   let app: INestApplication<App>;
+  const testEmail = 'test@test.com';
+  const testPass = 'password';
 
   beforeAll(async () => {
     await resetDatabase();
@@ -27,13 +29,11 @@ describe('Authentication System', () => {
   });
 
   it('should handle a signup request', async () => {
-    const testEmail = 'okay1@data.com';
-
     return request(app.getHttpServer())
       .post('/auth/signup')
       .send({
         email: testEmail,
-        password: 'password',
+        password: testPass,
       })
       .expect(201)
       .then((res) => {
@@ -41,6 +41,23 @@ describe('Authentication System', () => {
 
         expect(_id).toBeDefined();
         expect(email).toEqual(testEmail);
+      });
+  });
+
+  it('should log the user in if he is signed-up before', async () => {
+    return request(app.getHttpServer())
+      .post('/auth/login')
+      .send({
+        email: testEmail,
+        password: testPass,
+      })
+      .expect(201)
+      .then((res) => {
+        const { _id, email, accessToken } = res.body;
+
+        expect(_id).toBeDefined();
+        expect(email).toEqual(testEmail);
+        expect(accessToken).toBeDefined();
       });
   });
 });
