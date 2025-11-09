@@ -6,13 +6,14 @@ import {
   AfterUpdate,
   AfterRemove,
   Index,
+  ObjectId,
+  OneToMany,
 } from 'typeorm';
-import { ObjectId } from 'mongodb';
-// import { Exclude, Transform } from 'class-transformer';
+
+import { Report } from '../reports/report.entity';
 
 @Entity()
 export class User {
-  // @Transform(({ value }) => value?.toString()) // To convert the BSON type to JSON during transform
   @ObjectIdColumn()
   _id: ObjectId;
 
@@ -21,7 +22,6 @@ export class User {
   email: string;
 
   @Column()
-  // @Exclude() // Transform entity into plain object, remove password field then convert to JSON
   password: string;
 
   // Hooks only works on entity instances not on plain object in repository
@@ -39,4 +39,7 @@ export class User {
   logRemove() {
     console.log('User document deleted with id', this._id);
   }
+
+  @OneToMany(() => Report, (report) => report.user)
+  reports: Report[];
 }

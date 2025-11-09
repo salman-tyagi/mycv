@@ -1,5 +1,6 @@
-import { Entity, ObjectIdColumn, Column } from 'typeorm';
-import { ObjectId } from 'mongodb';
+import { Entity, ObjectIdColumn, Column, ObjectId, ManyToOne } from 'typeorm';
+
+import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
@@ -26,4 +27,7 @@ export class Report {
 
   @Column()
   lng: number;
+
+  @ManyToOne(() => User, (user) => user.reports)
+  user: User;
 }
