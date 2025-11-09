@@ -18,5 +18,6 @@ import { User } from './user.entity';
     AuthService,
     // { provide: APP_INTERCEPTOR, useClass: CurrentUserInterceptor },
   ],
+  exports: [UsersService, AuthService],
 })
 export class UsersModule {}
