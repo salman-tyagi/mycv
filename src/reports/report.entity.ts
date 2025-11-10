@@ -4,8 +4,16 @@ import { User } from '../users/user.entity';
 
 @Entity()
 export class Report {
+  // Set default values if using mongodb
+  constructor() {
+    this.approved = false;
+  }
+
   @ObjectIdColumn()
   _id: ObjectId;
+
+  @Column()
+  approved: boolean;
 
   @Column()
   price: number;

@@ -7,6 +7,9 @@ export class ReportDto {
   _id: ObjectId;
 
   @Expose()
+  approved: boolean;
+
+  @Expose()
   make: string;
 
   @Expose()
