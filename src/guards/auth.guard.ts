@@ -37,7 +37,7 @@ export class AuthGuard implements CanActivate {
       }
 
       req.user = user;
-      return Object.hasOwn(req, 'user');
+      return true;
     } catch (err) {
       if (err.name === JwtError.ExpiredJwt) {
         throw new UnauthorizedException('Token expired');

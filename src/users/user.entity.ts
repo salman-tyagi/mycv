@@ -14,6 +14,10 @@ import { Report } from '../reports/report.entity';
 
 @Entity()
 export class User {
+  constructor() {
+    this.role = 'user';
+  }
+
   @ObjectIdColumn()
   _id: ObjectId;
 
@@ -23,6 +27,9 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column({ enum: ['user', 'admin'] })
+  role: string;
 
   // Hooks only works on entity instances not on plain object in repository
   @AfterInsert() // Hook

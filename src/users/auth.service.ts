@@ -53,8 +53,8 @@ export class AuthService {
       const accessToken = await this.jwtService.signAsync({ _id: user._id });
 
       // TODO Set cookie
-
       // FIXME Send res with cookie
+      // Use interceptor to create and attach cookie to the response
 
       return { ...user, accessToken };
     } catch (err) {
