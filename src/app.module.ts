@@ -14,7 +14,7 @@ import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
 
-import { appDataSource } from '../data-source';
+import appDataSource from '../data-source';
 
 @Module({
   imports: [
@@ -22,13 +22,6 @@ import { appDataSource } from '../data-source';
       isGlobal: true,
       envFilePath: `.env.${process.env.NODE_ENV}`,
     }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mongodb',
-    //   url: process.env.DB,
-    //   database: 'my-cv',
-    //   entities: [User, Report],
-    //   synchronize: true, // for development only
-    // }),
 
     TypeOrmModule.forRoot({ ...appDataSource.options, entities: [User, Report] }),
 
@@ -54,7 +47,6 @@ import { appDataSource } from '../data-source';
 
     JwtModule.registerAsync({
       global: true,
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('JWT_ACCESS_TOKEN_SECRET'),
@@ -63,6 +55,7 @@ import { appDataSource } from '../data-source';
         },
       }),
     }),
+
     UsersModule,
     ReportsModule,
   ],
