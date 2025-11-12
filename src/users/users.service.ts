@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { ObjectId } from 'mongodb';
+// import { ObjectId } from 'mongodb';
 
 import { User } from './user.entity';
 
@@ -15,8 +15,8 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async findOne(id: ObjectId) {
-    const user = await this.userRepository.findOneBy({ _id: id });
+  async findOne(id: number) {
+    const user = await this.userRepository.findOneBy({ id });
 
     if (!user) {
       throw new NotFoundException('user not found');
@@ -39,7 +39,7 @@ export class UsersService {
     // return this.userRepository.findBy({ email });
   }
 
-  async update(id: ObjectId, payload: Partial<User>) {
+  async update(id: number, payload: Partial<User>) {
     // THIS WILL WORK BUT THE HOOKS WILL NOT EXECUTED
     // return this.userRepository.update(id, payload);
 
@@ -53,7 +53,7 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async remove(id: ObjectId) {
+  async remove(id: number) {
     // THIS WILL WORK BUT THE HOOKS WILL NOT EXECUTED
     // return this.userRepository.delete({ _id: id });
 

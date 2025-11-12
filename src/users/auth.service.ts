@@ -50,7 +50,8 @@ export class AuthService {
       }
 
       // Create token with user id only
-      const accessToken = await this.jwtService.signAsync({ _id: user._id });
+      // const accessToken = await this.jwtService.signAsync({ _id: user._id });
+      const accessToken = await this.jwtService.signAsync({ id: user.id });
 
       // TODO Set cookie
       // FIXME Send res with cookie

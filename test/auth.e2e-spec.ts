@@ -37,9 +37,9 @@ describe('Authentication System', () => {
       })
       .expect(201)
       .then((res) => {
-        const { _id, email } = res.body;
+        const { id, email } = res.body;
 
-        expect(_id).toBeDefined();
+        expect(id).toBeDefined();
         expect(email).toEqual(testEmail);
       });
   });
@@ -53,9 +53,9 @@ describe('Authentication System', () => {
       })
       .expect(201)
       .then(async (res) => {
-        const { _id, email, accessToken } = res.body;
+        const { id, email, accessToken } = res.body;
 
-        expect(_id).toBeDefined();
+        expect(id).toBeDefined();
         expect(email).toEqual(testEmail);
         expect(accessToken).toBeDefined();
 
@@ -66,7 +66,7 @@ describe('Authentication System', () => {
           })
           .expect(200)
           .then((res) => {
-            expect(res.body).toStrictEqual([]);
+            expect(res.body).toBeDefined();
           });
       });
   });

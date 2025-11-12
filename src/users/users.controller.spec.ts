@@ -18,23 +18,23 @@ describe('UsersController', () => {
       // signup: () => {},
       login: (email: string, password: string) => {
         const accessToken = 'fake-access-token';
-        const user = { _id: new ObjectId(), email, password, accessToken };
+        const user = { id: 1, email, password, accessToken, role: 'user', reports: [] };
 
         return Promise.resolve(user);
       },
     };
 
     fakeUsersService = {
-      findOne: (id: ObjectId) => {
+      findOne: (id: number) => {
         return Promise.resolve({
-          _id: new ObjectId(id),
+          id,
           email: 'fhsj@dhj.com',
           password: 'asdf',
         } as unknown as User);
       },
 
       find: (email: string) => {
-        return Promise.resolve([{ _id: ObjectId, email, password: '123fdj' } as unknown as User]);
+        return Promise.resolve([{ email, password: '123fdj' } as unknown as User]);
       },
 
       // update: () => {},

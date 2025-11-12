@@ -3,8 +3,9 @@ import { Expose, Transform } from 'class-transformer';
 
 export class ReportDto {
   @Expose()
-  @Transform(({ obj }) => obj._id)
-  _id: ObjectId;
+  // @Transform(({ obj }) => obj._id)
+  // _id: ObjectId;
+  id: number;
 
   @Expose()
   approved: boolean;
@@ -28,6 +29,8 @@ export class ReportDto {
   lng: number;
 
   @Expose()
-  @Transform(({ obj }) => obj.user._id)
-  user: ObjectId;
+  // @Transform(({ obj }) => obj.user._id)
+  // user: ObjectId;
+  @Transform(({ obj }) => obj.user.id)
+  user: number;
 }

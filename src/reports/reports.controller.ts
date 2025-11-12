@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+// import { ObjectId } from 'mongodb';
 
 import { ReportsService } from './reports.service';
 
@@ -34,6 +34,6 @@ export class ReportsController {
   @Patch(':id')
   @UseGuards(AuthGuard, new AdminGuard(['admin']))
   approveReport(@Param('id') id: string, @Body() body: ApproveReportDto) {
-    return this.reportsService.changeApproval(ObjectId.createFromHexString(id), body.approved);
+    return this.reportsService.changeApproval(parseInt(id), body.approved);
   }
 }

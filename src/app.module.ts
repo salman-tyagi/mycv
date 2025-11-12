@@ -14,6 +14,8 @@ import { ReportsModule } from './reports/reports.module';
 import { User } from './users/user.entity';
 import { Report } from './reports/report.entity';
 
+import { appDataSource } from '../data-source';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,18 +29,29 @@ import { Report } from './reports/report.entity';
     //   entities: [User, Report],
     //   synchronize: true, // for development only
     // }),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
-        return {
-          type: 'mongodb',
-          url: configService.get('DB'),
-          entities: [User, Report],
-          synchronize: configService.get('NODE_ENV') === 'development',
-        };
-      },
-    }),
+
+    TypeOrmModule.forRoot({ ...appDataSource.options, entities: [User, Report] }),
+
+    // TypeOrmModule.forRoot({
+    //   type: 'sqlite',
+    //   database: 'db.sqlite',
+    //   entities: [User, Report],
+    //   synchronize: true, // for development only
+    // }),
+
+    // TypeOrmModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: async (configService: ConfigService) => {
+    //     return {
+    //       type: 'mongodb',
+    //       url: configService.get('DB'),
+    //       entities: [User, Report],
+    //       synchronize: true,
+    //     };
+    //   },
+    // }),
+
     JwtModule.registerAsync({
       global: true,
       imports: [ConfigModule],

@@ -9,7 +9,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ObjectId } from 'mongodb';
+// import { ObjectId } from 'mongodb';
 
 import { UsersService } from './users.service';
 import { AuthService } from './auth.service';
@@ -49,7 +49,8 @@ export class UsersController {
 
   @Get(':id')
   getUser(@Param('id') id: string) {
-    return this.userService.findOne(ObjectId.createFromHexString(id));
+    // return this.userService.findOne(ObjectId.createFromHexString(id));
+    return this.userService.findOne(parseInt(id));
   }
 
   @UseGuards(AuthGuard)
@@ -60,11 +61,13 @@ export class UsersController {
 
   @Delete(':id')
   removeUser(@Param('id') id: string) {
-    return this.userService.remove(ObjectId.createFromHexString(id));
+    // return this.userService.remove(ObjectId.createFromHexString(id));
+    return this.userService.remove(parseInt(id));
   }
 
   @Patch(':id')
   updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
-    return this.userService.update(ObjectId.createFromHexString(id), body);
+    // return this.userService.update(ObjectId.createFromHexString(id), body);
+    return this.userService.update(parseInt(id), body);
   }
 }

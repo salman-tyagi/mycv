@@ -21,7 +21,7 @@ describe('AuthService', () => {
         return Promise.resolve(filteredUsers);
       },
       create: (email: string, password: string) => {
-        const user = { _id: new ObjectId(), email, password } as User;
+        const user = { id: 1, email, password } as User;
         users.push(user);
 
         return Promise.resolve(user);

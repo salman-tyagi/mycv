@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ObjectId } from 'mongodb';
+// import { ObjectId } from 'mongodb';
 
 import { UsersService } from '../users.service';
 import { JwtError } from '../../constants/config';
@@ -32,19 +32,20 @@ export class CurrentUserInterceptor implements NestInterceptor {
 
     try {
       const decode = await this.jwtService.verifyAsync(token);
-      const user = await this.usersService.findOne(ObjectId.createFromHexString(decode._id));
+      // const user = await this.usersService.findOne(ObjectId.createFromHexString(decode._id));
+      const user = await this.usersService.findOne(decode._id);
 
       if (user) {
         req.user = user;
       }
     } catch (err) {
-      if (err.name === JwtError.ExpiredJwt) {
-        throw new UnauthorizedException('Token expired');
-      }
+      // if (err.name === JwtError.ExpiredJwt) {
+      //   throw new UnauthorizedException('Token expired');
+      // }
 
-      if (err.name === JwtError.InvalidJwt) {
-        throw new UnauthorizedException('Invalid token');
-      }
+      // if (err.name === JwtError.InvalidJwt) {
+      //   throw new UnauthorizedException('Invalid token');
+      // }
 
       throw err;
     }

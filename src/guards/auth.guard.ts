@@ -30,7 +30,8 @@ export class AuthGuard implements CanActivate {
       }
 
       const decode = await this.jwtService.verifyAsync(token);
-      const user = await this.usersService.findOne(ObjectId.createFromHexString(decode._id));
+      // const user = await this.usersService.findOne(ObjectId.createFromHexString(decode._id));
+      const user = await this.usersService.findOne(decode.id);
 
       if (!user) {
         throw new NotFoundException('User not found with this token');
