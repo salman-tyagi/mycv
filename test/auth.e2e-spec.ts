@@ -4,16 +4,16 @@ import request from 'supertest';
 import { App } from 'supertest/types';
 
 import { AppModule } from '../src/app.module';
-import { resetDatabase } from './setup';
+// import { resetDatabase } from './setup';
 
 describe('Authentication System', () => {
   let app: INestApplication<App>;
   const testEmail = 'test@test.com';
   const testPass = 'password';
 
-  beforeAll(async () => {
-    await resetDatabase();
-  });
+  // beforeAll(async () => {
+  //   await resetDatabase();
+  // });
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({

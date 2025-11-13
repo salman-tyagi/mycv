@@ -20,6 +20,7 @@ switch (process.env.NODE_ENV) {
     Object.assign(options, {
       type: 'sqlite',
       database: 'test.sqlite',
+      migrationsRun: true,
     });
     break;
 
