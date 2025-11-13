@@ -23,11 +23,29 @@ export class ReportsService {
     const yearDelta = 3;
     const mileageDelta = 5000;
 
-    return this.repo.createQueryBuilder().select('*').where({
-      approved: true,
-      make,
-      model,
-    });
+    const latMin = lat - latLngDelta;
+    const latMax = lat + latLngDelta;
+    const lngMin = lng - latLngDelta;
+    const lngMax = lng + latLngDelta;
+    const yearMin = year - yearDelta;
+    const yearMax = year + yearDelta;
+    const mileageMin = mileage - mileageDelta;
+    const mileageMax = mileage + mileageDelta;
+
+    return this.repo
+      .createQueryBuilder('report')
+      .select('*')
+      .where('report.approved = :approved', { approved: false })
+      .andWhere('report.make = :make', { make })
+      .andWhere('report.model = :model', { model })
+      .andWhere('report.lat BETWEEN :latMin AND :latMax', { latMin, latMax })
+      .andWhere('report.lng BETWEEN :lngMin AND :lngMax', { lngMin, lngMax })
+      .andWhere('report.year BETWEEN :yearMin AND :yearMax', { yearMin, yearMax })
+      .andWhere('report.mileage BETWEEN :mileageMin AND :mileageMax', { mileageMin, mileageMax })
+      .orderBy('report.mileage', 'DESC')
+      .limit(3)
+      .select('AVG(report.price)', 'averagePrice')
+      .getRawOne();
 
     /* FOR ONLY MONGODB
     const [stats] = await this.repo
