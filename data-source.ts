@@ -1,29 +1,35 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 
-const options = {
+const options: DataSourceOptions = {
   type: 'sqlite',
-  entities: ['**/*.entity.ts'],
+  database: 'db.sqlite',
+  entities: ['**/*.entity*{.ts,.js}'],
   synchronize: false,
-} as DataSourceOptions;
-
-const appDataSource = new DataSource(options);
+  migrations: ['dist/migrations/**/*{.ts,.js}'],
+};
 
 switch (process.env.NODE_ENV) {
   case 'development':
     Object.assign(options, {
+      type: 'sqlite',
       database: 'db.sqlite',
     });
     break;
 
   case 'test':
     Object.assign(options, {
+      type: 'sqlite',
       database: 'test.sqlite',
     });
+    break;
 
   case 'production':
+    break;
 
   default:
     throw new Error('unknown environment');
 }
+
+const appDataSource = new DataSource(options);
 
 export default appDataSource;
